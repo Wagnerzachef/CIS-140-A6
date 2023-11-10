@@ -1,0 +1,53 @@
+#!/bin/bash
+
+## Assignment: Bash Week five (5)
+## Author: Zachary Wagner
+## Version: 10.27.2023.03
+## Purpose: BASH: You have been asked to write a script that takes in a csv file containing employee data. Put each item into a separate array so that they can be processed. Pass the age array to a counting method that outputs the number of employees that are old enough to receive social security benefits.
+
+IFS=","
+
+declare inFile="$1"
+declare outFile="SocialSecurityBenefits.txt"
+declare -a lastNames
+declare -a firstNames
+declare -a ages
+
+main() {
+    readFile
+    ssCount "${ages[@]}"
+    exit 0
+}
+
+readFile() {
+    declare -i lineNumber=0
+
+    while read lastName firstName age
+    do
+        lastNames[$lineNumber]=$lastName
+        firstNames[$lineNumber]=$firstName
+        ages[$lineNumber]=$age
+        (( lineNumber++ ))
+    done < $inFile
+}
+
+
+ssCount(){
+declare -a ages=("$@")
+declare -i count=0
+declare -i ssAge=62
+
+for (( i=0; i < ${#ages[@]}; i++ ))
+    do
+           
+        if [[ "${ages[i]}" > "($ssAge - 1)" ]]
+                 
+            then
+                    count=$count+1
+                echo "${lastNames[i]}, ${firstNames[i]}" >> $outFile
+        fi
+    done
+echo "Total employees eligable for social security: $count" >> $outFile
+}
+
+main
